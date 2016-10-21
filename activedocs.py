@@ -6,8 +6,9 @@ import configparser
 import argparse
 import os
 
+config_directory = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read(config_directory + "/config.ini")
 USERNAME = config['3scale']['username']
 PASSWORD = config['3scale']['password']
 THREESCALE_ACCOUNT = config['3scale']['account']
