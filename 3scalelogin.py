@@ -3,19 +3,22 @@ import requests
 from lxml import html
 import re
 import configparser
+import argparse
+import os
 
 config = configparser.ConfigParser()
 config.read("config.ini")
 USERNAME = config['3scale']['username']
 PASSWORD = config['3scale']['password']
 THREESCALE_ACCOUNT = config['3scale']['account']
+ACTIVEDOCS_PATH = config['3scale']['path']
 
 LOGIN_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/login"
 LOGIN_SESSION_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/sessions"
 URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services"
 
 
-def main():
+def pull():
     session_requests = requests.session()
 
     # Get login token
@@ -48,8 +51,19 @@ def main():
             active_doc_ids.add(matches.group(0))
 
     for id in active_doc_ids:
-        print(session_requests.get("https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services/" + id +
-                                   ".json").text)
+        file_content = session_requests.get("https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services/" + id +
+                                   ".json").content
+        f = open(os.path.expanduser(ACTIVEDOCS_PATH + "/" + id + ".json"), 'wb')
+        f.write(file_content)
+        f.close()
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Process CLI Arguments')
+    parser.add_argument('command', choices=['pull', 'push'])
+    args = parser.parse_args()
+
+    if args.command == "pull":
+        pull()
+    elif args.command == "push":
+        print("Push time")
+

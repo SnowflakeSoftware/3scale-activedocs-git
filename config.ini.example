@@ -1,0 +1,5 @@
+[3scale]
+username = name@example.com
+password = superawesomeP@assword
+account = test-admin
+path = /home/user/gitstuff/activedocs
