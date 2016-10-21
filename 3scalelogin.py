@@ -2,10 +2,13 @@
 import requests
 from lxml import html
 import re
+import configparser
 
-USERNAME = ""
-PASSWORD = ""
-THREESCALE_ACCOUNT = ""
+config = configparser.ConfigParser()
+config.read("config.ini")
+USERNAME = config['3scale']['username']
+PASSWORD = config['3scale']['password']
+THREESCALE_ACCOUNT = config['3scale']['account']
 
 LOGIN_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/login"
 LOGIN_SESSION_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/sessions"
