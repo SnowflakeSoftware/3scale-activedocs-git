@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 import requests
 from lxml import html
 import re
@@ -11,10 +11,11 @@ LOGIN_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/login"
 LOGIN_SESSION_URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/p/sessions"
 URL = "https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services"
 
+
 def main():
     session_requests = requests.session()
 
-    # Get login csrf token
+    # Get login token
     result = session_requests.get(LOGIN_URL)
     tree = html.fromstring(result.text)
     authenticity_token = list(set(tree.xpath("//input[@name='authenticity_token']/@value")))[0]
@@ -44,8 +45,8 @@ def main():
             active_doc_ids.add(matches.group(0))
 
     for id in active_doc_ids:
-        print(session_requests.get("https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services/" + id + ".json").text)
-
+        print(session_requests.get("https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services/" + id +
+                                   ".json").text)
 
 if __name__ == '__main__':
     main()
