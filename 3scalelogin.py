@@ -41,16 +41,9 @@ def pull():
     # Scrape url
     result = session_requests.get(URL, headers=dict(referer=URL))
     html_string = result.content.decode('utf-8')
-    find_string = "/admin/api_docs/services/"
-    start_positions = [match.end() for match in re.finditer(re.escape(find_string), html_string)]
+    matches = re.findall('\/admin\/api_docs\/services\/(\d+)\/preview', html_string)
 
-    active_doc_ids = set()
-    for position in start_positions:
-        matches = re.search('\d+', html_string[position:])
-        if matches:
-            active_doc_ids.add(matches.group(0))
-
-    for id in active_doc_ids:
+    for id in matches:
         file_content = session_requests.get("https://" + THREESCALE_ACCOUNT + ".3scale.net/admin/api_docs/services/" + id +
                                    ".json").content
         f = open(os.path.expanduser(ACTIVEDOCS_PATH + "/" + id + ".json"), 'wb')
